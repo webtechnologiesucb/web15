@@ -1,0 +1,39 @@
+<article class="lesson">
+  <header class="lesson__head">
+    <div class="row">
+      <app-base-badge tone="accent">Lección {{ lesson().order }}</app-base-badge>
+      <app-base-badge tone="primary">{{ lesson().level }}</app-base-badge>
+      <span class="dim">{{ lesson().duration }} min</span>
+    </div>
+
+    <h1 class="lesson__title">{{ lesson().title }}</h1>
+    <p class="lesson__subtitle muted">{{ lesson().subtitle }}</p>
+    <p class="lesson__summary">{{ lesson().summary }}</p>
+
+    <ul class="concepts">
+      @for (concept of lesson().concepts; track concept) {
+        <li class="concepts__item">{{ concept }}</li>
+      }
+    </ul>
+  </header>
+
+  <!-- Aquí cada lección proyecta sus secciones y demos -->
+  <ng-content />
+
+  <section class="lesson__section">
+    <app-challenge-list [items]="lesson().challenges" />
+  </section>
+
+  <div class="lesson__actions">
+    <button
+      appBaseButton
+      type="button"
+      [variant]="done() ? 'ghost' : 'accent'"
+      (click)="toggleDone()"
+    >
+      {{ done() ? '✔ Completada — pulsar para desmarcar' : 'Marcar como completada' }}
+    </button>
+  </div>
+
+  <app-lesson-pager [lesson]="lesson()" />
+</article>

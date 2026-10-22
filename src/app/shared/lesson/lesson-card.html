@@ -1,0 +1,30 @@
+<li>
+  <a
+    class="lesson-card"
+    [class.lesson-card--done]="done()"
+    [routerLink]="['/lecciones', lesson().id]"
+  >
+    <div class="lesson-card__top">
+      <span class="lesson-card__order">{{ pad2(lesson().order) }}</span>
+      <app-base-badge [tone]="levelTone[lesson().level]">{{ lesson().level }}</app-base-badge>
+      <span class="dim">{{ lesson().duration }} min</span>
+      @if (done()) {
+        <span class="lesson-card__state" title="Lección completada">✓</span>
+      }
+    </div>
+
+    <h3 class="lesson-card__title">{{ lesson().title }}</h3>
+    <p class="lesson-card__subtitle">{{ lesson().subtitle }}</p>
+    <p class="lesson-card__summary">{{ lesson().summary }}</p>
+
+    <ul class="lesson-card__concepts">
+      @for (concept of lesson().concepts; track concept) {
+        <li>{{ concept }}</li>
+      }
+    </ul>
+
+    <span class="lesson-card__cta">
+      {{ done() ? 'Repasar la lección' : 'Empezar la lección' }} →
+    </span>
+  </a>
+</li>

@@ -1,0 +1,14 @@
+<div class="app">
+  <!-- `[(menuOpen)]` es un enlace de doble sentido con el `model()` del header -->
+  <app-site-header [(menuOpen)]="menuOpen" />
+
+  <div class="app__body container">
+    <app-site-sidebar [open]="menuOpen()" (closed)="menuOpen.set(false)" />
+
+    <main class="app__main">
+      <router-outlet />
+    </main>
+  </div>
+
+  <app-site-footer />
+</div>

@@ -1,0 +1,41 @@
+<header class="header">
+  <div class="header__inner container">
+    <button
+      appBaseButton
+      variant="subtle"
+      size="sm"
+      type="button"
+      class="header__burger"
+      [attr.aria-expanded]="menuOpen()"
+      aria-controls="sidebar"
+      (click)="toggleMenu()"
+    >
+      <span aria-hidden="true">☰</span>
+      <span class="visually-hidden">Menú de navegación</span>
+    </button>
+
+    <a routerLink="/" class="brand">
+      <span class="brand__icon" aria-hidden="true">🅰️</span>
+      <span class="brand__text">
+        <strong>Ruta de Aprendizaje Angular</strong>
+        <small>Angular 21 · signals · SWAPI</small>
+      </span>
+    </a>
+
+    <span class="spacer"></span>
+
+    <app-favorite-link />
+
+    <button
+      appBaseButton
+      variant="subtle"
+      size="sm"
+      type="button"
+      [attr.title]="isLight() ? 'Activar tema oscuro' : 'Activar tema claro'"
+      (click)="toggleTheme()"
+    >
+      <span aria-hidden="true">{{ isLight() ? '🌙' : '☀️' }}</span>
+      <span class="visually-hidden">Cambiar tema</span>
+    </button>
+  </div>
+</header>

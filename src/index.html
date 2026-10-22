@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ruta de aprendizaje Angular · SWAPI</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Showcase de Angular (standalone components, signals, DI, router y formularios) con una ruta de aprendizaje de 10 lecciones sobre la API SWAPI."
+    />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <script>
+      /*
+       * Anti-parpadeo del tema (lección 06).
+       * Fija `data-theme` en <html> antes de que Angular arranque, leyendo la
+       * preferencia guardada. El ThemeService parte de este valor ya calculado.
+       */
+      (function () {
+        try {
+          var stored = localStorage.getItem('web15-theme');
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+          document.documentElement.dataset.theme =
+            stored === 'light' || stored === 'dark' ? stored : prefersLight ? 'light' : 'dark';
+        } catch (error) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

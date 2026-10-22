@@ -1,0 +1,51 @@
+<aside id="sidebar" class="sidebar" [class.sidebar--open]="open()">
+  <app-progress-panel />
+
+  <nav class="nav" aria-label="Ruta de aprendizaje">
+    <p class="nav__title">Ruta de aprendizaje</p>
+    <ul class="nav__list">
+      @for (lesson of lessons; track lesson.id) {
+        <li>
+          <a
+            class="lesson-link"
+            [class.lesson-link--done]="isCompleted(lesson.id)"
+            [routerLink]="['/lecciones', lesson.id]"
+            routerLinkActive="lesson-link--active"
+            (click)="close()"
+          >
+            <span class="lesson-link__order">{{ pad2(lesson.order) }}</span>
+            <span class="lesson-link__body">
+              <span class="lesson-link__title">{{ lesson.title }}</span>
+              <span class="lesson-link__meta">
+                <app-base-badge [tone]="levelTone[lesson.level]">{{ lesson.level }}</app-base-badge>
+                <small class="dim">{{ lesson.duration }} min</small>
+              </span>
+            </span>
+            <span class="lesson-link__check" aria-hidden="true">
+              {{ isCompleted(lesson.id) ? '✓' : '' }}
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <nav class="nav" aria-label="Explorador de SWAPI">
+    <p class="nav__title">Explorador SWAPI</p>
+    <ul class="nav__list nav__list--compact">
+      @for (name of resources; track name) {
+        <li>
+          <a
+            class="resource-link"
+            [routerLink]="['/', name]"
+            routerLinkActive="resource-link--active"
+            (click)="close()"
+          >
+            <span aria-hidden="true">{{ meta[name].icon }}</span>
+            <span>{{ meta[name].plural }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+</aside>

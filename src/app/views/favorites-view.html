@@ -1,0 +1,40 @@
+<div class="stack">
+  <div class="page-head">
+    <div>
+      <nav class="breadcrumb dim" aria-label="Migas de pan">
+        <a routerLink="/">Inicio</a>
+        <span aria-hidden="true">/</span>
+        <span>Favoritos</span>
+      </nav>
+      <h1>★ Favoritos</h1>
+      <p class="muted">
+        {{ count() }} recurso(s) guardado(s) en <code class="inline-code">localStorage</code>
+      </p>
+    </div>
+
+    @if (count() > 0) {
+      <button appBaseButton variant="danger" size="sm" type="button" (click)="clear()">
+        Vaciar favoritos
+      </button>
+    }
+  </div>
+
+  @if (count() === 0) {
+    <app-empty-state
+      icon="⭐"
+      title="Todavía no hay favoritos"
+      message="Marca recursos con la estrella en el explorador y aparecerán aquí, también después de recargar la página."
+    >
+      <div class="empty__actions">
+        <a appBaseButton variant="primary" routerLink="/people">Explorar personajes</a>
+        <a appBaseButton variant="ghost" routerLink="/films">Ver películas</a>
+      </div>
+    </app-empty-state>
+  } @else {
+    <div class="fav-list">
+      @for (url of items(); track url) {
+        <app-favorite-row [url]="url" />
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,14 @@
+<div class="fav-row">
+  <span class="fav-row__icon" aria-hidden="true">{{ icon() }}</span>
+
+  <div class="fav-row__body">
+    <a class="fav-row__link" [routerLink]="link()">{{ title() }}</a>
+    <small class="dim">{{ kind() }} #{{ id() }}</small>
+  </div>
+
+  <span class="fav-row__state dim">{{ state() }}</span>
+
+  <button appBaseButton variant="danger" size="sm" type="button" (click)="remove()">
+    Quitar
+  </button>
+</div>

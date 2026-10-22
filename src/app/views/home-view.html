@@ -1,0 +1,79 @@
+<div class="home stack">
+  <section class="hero surface">
+    <p class="hero__eyebrow">Showcase didáctico</p>
+    <h1 class="hero__title">
+      Ruta de aprendizaje de <span class="hero__mark">Angular</span> + signals
+    </h1>
+    <p class="hero__lead muted">
+      Diez lecciones progresivas para ir de los primeros componentes al rendimiento, con ejemplos
+      reales contra la API de <strong>SWAPI</strong> (Star Wars). Cada lección incluye una demo
+      interactiva, el código comentado y retos para practicar.
+    </p>
+
+    <div class="hero__stats">
+      <div class="stat">
+        <strong>{{ lessons.length }}</strong>
+        <span>lecciones</span>
+      </div>
+      <div class="stat">
+        <strong>{{ totalMinutes }}</strong>
+        <span>minutos de estudio</span>
+      </div>
+      <div class="stat">
+        <strong>{{ resources.length }}</strong>
+        <span>recursos de SWAPI</span>
+      </div>
+      <div class="stat">
+        <strong>{{ percent() }}%</strong>
+        <span>{{ done() }} de {{ total }} completadas</span>
+      </div>
+    </div>
+
+    <div class="hero__actions">
+      <a appBaseButton variant="primary" [routerLink]="['/lecciones', featured.id]">
+        Empezar por la lección 01
+      </a>
+      <a appBaseButton variant="accent" routerLink="/people">Explorar la API</a>
+      @if (nextPending(); as lesson) {
+        <a appBaseButton variant="ghost" [routerLink]="['/lecciones', lesson.id]">
+          Continuar con la lección {{ lesson.order }}
+        </a>
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__head">
+      <h2>La ruta en 10 lecciones</h2>
+      <p class="muted">
+        Pensada para hacerse en orden: cada lección usa lo aprendido en las anteriores. El progreso
+        se guarda en tu navegador.
+      </p>
+    </div>
+
+    <ul class="lesson-grid">
+      @for (lesson of lessons; track lesson.id) {
+        <app-lesson-card [lesson]="lesson" />
+      }
+    </ul>
+  </section>
+
+  <section class="section">
+    <div class="section__head">
+      <h2>Los cinco recursos de SWAPI</h2>
+      <p class="muted">
+        El explorador que se usa en las demos: listados paginados, búsqueda en servidor y fichas de
+        detalle con sus relaciones.
+      </p>
+    </div>
+
+    <div class="resource-grid">
+      @for (name of resources; track name) {
+        <a class="resource-tile" [routerLink]="['/', name]">
+          <span aria-hidden="true">{{ meta[name].icon }}</span>
+          <span>{{ meta[name].plural }}</span>
+        </a>
+      }
+    </div>
+  </section>
+</div>

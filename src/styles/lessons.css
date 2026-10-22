@@ -1,0 +1,356 @@
+/* ==========================================================================
+   lessons.css · estilos de las demos de cada lección (prefijo lNN-)
+   ========================================================================== */
+
+/* --- Lección 01 · JSX y componentes -------------------------------------- */
+
+.l01-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+.l01-power {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+.l01-power__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  transition: width 0.35s ease;
+}
+.l01-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.l01-skills li {
+  padding: 0.18rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-3);
+  color: var(--text-muted);
+  font-size: 0.76rem;
+}
+
+/* --- Lección 02 · useState ----------------------------------------------- */
+
+.l02-panel {
+  gap: 1rem;
+}
+.l02-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.l02-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+}
+.l02-summary p {
+  margin: 0;
+}
+.l02-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.l02-log__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+  padding-left: 1.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.l02-log__item--new {
+  color: var(--accent);
+  animation: l02-pop 0.45s ease;
+}
+@keyframes l02-pop {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --- Lección 03 · useEffect y datos -------------------------------------- */
+
+.l03-panel {
+  gap: 1rem;
+}
+.l03-result {
+  min-height: 120px;
+}
+.l03-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.9rem;
+  background: var(--surface-3);
+}
+.l03-note {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+/* --- Lección 04 · hooks personalizados ----------------------------------- */
+
+.l04-panel {
+  gap: 0.9rem;
+}
+.l04-stats {
+  gap: 0.4rem;
+}
+
+/* --- Lección 05 · router ------------------------------------------------- */
+
+.l05-panel {
+  gap: 0.5rem;
+}
+.l05-json {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #070a18;
+  color: #dfe6ff;
+  font-size: 0.82rem;
+  overflow-x: auto;
+}
+
+/* --- Lección 06 · estado global ------------------------------------------ */
+
+.l06-panel {
+  gap: 0.9rem;
+}
+.l06-candidates {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 0.6rem;
+}
+.l06-candidate {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+}
+.l06-candidate strong {
+  flex: 1;
+}
+.l06-saved {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.l06-saved code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.l06-compare p {
+  margin: 0;
+}
+
+/* --- Lección 07 · formularios y búsqueda --------------------------------- */
+
+.l07-form {
+  gap: 0.9rem;
+}
+.l07-controls {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: end;
+}
+.l07-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.l07-check {
+  grid-column: 1 / -1;
+}
+.l07-status {
+  margin: 0;
+  font-size: 0.85rem;
+}
+.l07-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.l07-results li a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  text-decoration: none;
+}
+.l07-results li a:hover {
+  border-color: var(--primary);
+  text-decoration: none;
+}
+
+@media (max-width: 700px) {
+  .l07-controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --- Lección 08 · composición y Context ---------------------------------- */
+
+.l08-readout {
+  margin: 0;
+  font-size: 0.85rem;
+}
+.l08-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.l08-index {
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+.l08-row strong {
+  flex: 1;
+}
+
+/* --- Lección 09 · animaciones -------------------------------------------- */
+
+.l09-panel {
+  gap: 0.9rem;
+}
+.l09-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.l09-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  animation: l09-in 0.28s ease;
+}
+.l09-item--leaving {
+  animation: l09-out 0.28s ease forwards;
+}
+@keyframes l09-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes l09-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(24px) scale(0.98);
+  }
+}
+.l09-loaded {
+  margin-top: 0.5rem;
+}
+
+/* --- Lección 10 · rendimiento -------------------------------------------- */
+
+.l10-panel {
+  gap: 0.9rem;
+}
+.l10-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-height: 420px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.l10-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+}
+.l10-row--selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.l10-row__btn {
+  flex: 1;
+  padding: 0.1rem 0;
+  border: none;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.l10-row__count {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+.l10-checklist ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.9rem;
+}

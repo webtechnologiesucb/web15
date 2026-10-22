@@ -1,0 +1,18 @@
+/* ==========================================================================
+   Showcase Angular + SWAPI · estilos globales
+   Se cargan desde angular.json ("styles": ["src/styles.css"]) y por tanto
+   NO están encapsulados: cualquier componente puede usar estas clases.
+
+   Organización (la misma que en web13/web14):
+     - styles/global.css      → tokens de tema, reset y utilidades
+     - styles/components.css  → componentes reutilizables (ui, layout, swapi, lección)
+     - styles/views.css       → páginas (portada, explorador, ficha, favoritos)
+     - styles/lessons.css     → demos de las lecciones (prefijos l01- … l10-)
+
+   La encapsulación de estilos por componente se explica en la lección 08.
+   ========================================================================== */
+
+@import './styles/global.css';
+@import './styles/components.css';
+@import './styles/views.css';
+@import './styles/lessons.css';

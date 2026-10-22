@@ -1,0 +1,18 @@
+<article class="rcard">
+  <div class="rcard__head">
+    <a class="rcard__main" [routerLink]="detailLink()">
+      <span class="rcard__icon" aria-hidden="true">{{ meta().icon }}</span>
+      <span class="rcard__title">{{ title() }}</span>
+    </a>
+    <app-favorite-button [url]="item().url" />
+  </div>
+
+  <dl class="rcard__details">
+    @for (fact of facts(); track fact.label) {
+      <div class="rcard__row">
+        <dt>{{ fact.label }}</dt>
+        <dd>{{ fact.value }}</dd>
+      </div>
+    }
+  </dl>
+</article>

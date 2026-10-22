@@ -1,0 +1,148 @@
+<app-lesson-shell [lesson]="lesson">
+  <section class="lesson__section">
+    <h2 class="lesson__h2">1 · Interpolar, enlazar y escuchar eventos</h2>
+
+    <p>
+      Un componente es una clase con <code class="inline-code">&#64;Component</code> que declara un
+      selector, una plantilla y lo que necesita importar. Dentro de la plantilla hay tres gestos que
+      se repiten constantemente:
+    </p>
+    <ul>
+      <li>
+        <strong>Interpolación</strong>:
+        <code class="inline-code">{{ braces }}</code> escribe texto.
+      </li>
+      <li>
+        <strong>Binding de propiedad y atributo</strong>:
+        <code class="inline-code">[propiedad]="expresión"</code> pasa datos al DOM. Se usa
+        <code class="inline-code">[attr.x]</code> para atributos que no son propiedades (por
+        ejemplo <code class="inline-code">aria-label</code>).
+      </li>
+      <li>
+        <strong>Binding de evento</strong>:
+        <code class="inline-code">(click)="metodo()"</code> escucha lo que hace el usuario.
+      </li>
+    </ul>
+
+    <div class="l01-grid">
+      <app-base-card
+        [title]="character.name"
+        [subtitle]="character.species + ' · ' + character.side"
+        hover
+      >
+        <div class="row">
+          <span
+            role="img"
+            style="font-size: 2.4rem"
+            [attr.aria-label]="'Avatar de ' + character.name"
+          >
+            {{ character.icon }}
+          </span>
+          <div>
+            <p class="field-label">Ficha del personaje</p>
+            <p><strong>{{ character.name }}</strong> ({{ character.birthYear }})</p>
+          </div>
+        </div>
+
+        <dl class="rcard__details">
+          <div class="rcard__row"><dt>Altura</dt><dd>{{ character.height }} cm</dd></div>
+          <div class="rcard__row"><dt>Masa</dt><dd>{{ character.mass }} kg</dd></div>
+          <div class="rcard__row"><dt>Habilidades</dt><dd>{{ character.abilities.length }}</dd></div>
+        </dl>
+
+        <app-power-meter label="Nivel de poder" [value]="power" />
+
+        <div class="row">
+          <button
+            appBaseButton
+            variant="accent"
+            size="sm"
+            type="button"
+            [disabled]="power >= 100"
+            (click)="boostPower()"
+          >
+            +5 de poder
+          </button>
+          <button appBaseButton variant="subtle" size="sm" type="button" (click)="next()">
+            Siguiente personaje →
+          </button>
+        </div>
+      </app-base-card>
+
+      <app-base-card title="Bloques de control" subtitle="&#64;if, &#64;for y &#64;switch">
+        <p class="field-label">Afinidad (&#64;switch)</p>
+        @switch (character.side) {
+          @case ('Jedi') {
+            <app-base-badge tone="accent">Jedi · lado luminoso</app-base-badge>
+          }
+          @case ('Rebelde') {
+            <app-base-badge tone="primary">Alianza Rebelde</app-base-badge>
+          }
+          @default {
+            <app-base-badge tone="danger">Imperio Galáctico</app-base-badge>
+          }
+        }
+
+        <p class="field-label">Habilidades (&#64;for con track)</p>
+        <ul class="l01-skills">
+          @for (ability of character.abilities; track ability) {
+            <li>{{ ability }}</li>
+          } @empty {
+            <li>Sin habilidades registradas</li>
+          }
+        </ul>
+
+        <p class="field-label">Aviso (&#64;if / &#64;else)</p>
+        @if (power >= 90) {
+          <p class="row row--between">
+            <span>⚠️ Poder desmedido</span>
+            <strong>{{ power }}%</strong>
+          </p>
+        } @else {
+          <p class="dim">Poder bajo control ({{ power }}%).</p>
+        }
+
+        <p class="field-label">Cambiar de personaje (&#64;for sobre los botones)</p>
+        <div class="row">
+          @for (item of characters; track item.name; let i = $index) {
+            <button
+              appBaseButton
+              size="sm"
+              [variant]="i === index ? 'primary' : 'ghost'"
+              type="button"
+              (click)="select(i)"
+            >
+              {{ item.name.split(' ')[0] }}
+            </button>
+          }
+        </div>
+      </app-base-card>
+    </div>
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">2 · Pasar datos a un componente hijo</h2>
+
+    <p>
+      <code class="inline-code">app-power-meter</code> no sabe nada de SWAPI: recibe lo que necesita
+      con <code class="inline-code">input()</code> y calcula el porcentaje él mismo. El flujo es
+      siempre <strong>hacia abajo por inputs</strong> y hacia arriba por eventos.
+    </p>
+
+    <app-code-block title="power-meter.ts (extracto)" [code]="meterSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">3 · Cómo está hecho</h2>
+
+    <div class="l01-grid">
+      <app-base-card title="La clase" subtitle="lesson.ts">
+        <app-code-block title="lesson.ts" [code]="classSnippet" />
+      </app-base-card>
+
+      <app-base-card title="La plantilla" subtitle="lesson.html">
+        <app-code-block title="lesson.html" [code]="templateSnippet" />
+      </app-base-card>
+    </div>
+  </section>
+</app-lesson-shell>

@@ -1,0 +1,34 @@
+<div class="stack">
+  <div class="page-head">
+    <div>
+      <nav class="breadcrumb dim" aria-label="Migas de pan">
+        <a routerLink="/">Inicio</a>
+        <span aria-hidden="true">/</span>
+        <span>Lecciones</span>
+      </nav>
+      <h1>Ruta de aprendizaje</h1>
+      <p class="muted">
+        {{ total }} lecciones · {{ totalMinutes }} minutos · {{ done() }} completadas ({{
+          percent()
+        }}%)
+      </p>
+    </div>
+
+    <button
+      appBaseButton
+      variant="subtle"
+      size="sm"
+      type="button"
+      [disabled]="done() === 0"
+      (click)="reset()"
+    >
+      Reiniciar progreso
+    </button>
+  </div>
+
+  <ul class="lesson-grid">
+    @for (lesson of lessons; track lesson.id) {
+      <app-lesson-card [lesson]="lesson" />
+    }
+  </ul>
+</div>

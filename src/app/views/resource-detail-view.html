@@ -1,0 +1,87 @@
+<div class="detail stack">
+  <nav class="breadcrumb dim" aria-label="Migas de pan">
+    <a routerLink="/">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a [routerLink]="['/', resource()]">{{ currentMeta()?.plural ?? 'Explorador' }}</a>
+    <span aria-hidden="true">/</span>
+    <span>{{ title() || '#' + id() }}</span>
+  </nav>
+
+  @if (name() === null) {
+    <app-empty-state
+      icon="🧭"
+      title="Recurso desconocido"
+      message="Este tipo de recurso no existe en el explorador (people, planets, films, starships o species)."
+    >
+      <div class="empty__actions">
+        <a appBaseButton variant="primary" routerLink="/people">Ver personajes</a>
+      </div>
+    </app-empty-state>
+  } @else if (detail.error()) {
+    <app-error-state [message]="errorMessage()" (retry)="reload()" />
+  } @else if (item() === undefined) {
+    <app-loading-state />
+  } @else if (item(); as data) {
+    <header class="detail__head surface">
+      <div class="detail__title">
+        <span class="detail__icon" aria-hidden="true">{{ currentMeta()?.icon }}</span>
+        <div>
+          <h1>{{ title() }}</h1>
+          <p class="muted">{{ currentMeta()?.singular }} · id #{{ id() }}</p>
+        </div>
+      </div>
+
+      <app-favorite-button [url]="data.url" />
+    </header>
+
+    @if (openingCrawl(); as crawl) {
+      <section class="panel surface">
+        <p class="field-label">Texto de apertura</p>
+        <p>{{ crawl }}</p>
+      </section>
+    }
+
+    <section class="panel surface">
+      <h2 class="lesson__h2">Ficha</h2>
+
+      <div class="detail__fields">
+        @for (fact of facts(); track fact.label) {
+          <app-resource-field [label]="fact.label" [value]="fact.value" />
+        }
+      </div>
+
+      <p class="dim">Última actualización en SWAPI: {{ data.edited }}</p>
+    </section>
+
+    @if (relations().length > 0) {
+      @defer (on viewport) {
+        <section class="panel surface">
+          <h2 class="lesson__h2">Relacionado</h2>
+
+          <div class="stack-sm">
+            @for (relation of relations(); track relation.label) {
+              <div>
+                <p class="field-label">{{ relation.label }} ({{ relation.urls.length }})</p>
+                <div class="chips">
+                  @for (url of relation.urls; track url) {
+                    <app-resource-link [url]="url" />
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      } @placeholder {
+        <section class="panel surface">
+          <h2 class="lesson__h2">Relacionado</h2>
+          <p class="dim">
+            Los recursos relacionados se cargan en cuanto esta sección entra en pantalla
+            (<code class="inline-code">&#64;defer (on viewport)</code>).
+          </p>
+        </section>
+      } @loading (minimum 300ms) {
+        <app-loading-state label="Cargando recursos relacionados…" />
+      }
+    }
+  }
+</div>

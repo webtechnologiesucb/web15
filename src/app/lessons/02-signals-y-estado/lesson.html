@@ -1,0 +1,61 @@
+<app-lesson-shell [lesson]="lesson">
+  <section class="lesson__section">
+    <h2 class="lesson__h2">1 · Signals: set, update y lectura</h2>
+    <p>Los <strong>signals</strong> son valores reactivos. En la plantilla se leen con <code class="inline-code">()</code> y se notifican los cambios automáticamente.</p>
+    
+    <div class="l02-panel stack">
+      <app-base-card title="Contador" subtitle="signal() + computed()">
+        <div class="l02-summary">
+          <p>Valor: <strong>{{ contador() }}</strong></p>
+          <p>Doble: <strong>{{ doble() }}</strong></p>
+          <p>Tipo: <strong>{{ parOImpar() }}</strong></p>
+        </div>
+        <div class="row">
+          <button appBaseButton variant="subtle" size="sm" type="button" (click)="decrementar()">-1</button>
+          <button appBaseButton variant="accent" size="sm" type="button" (click)="incrementar()">+1</button>
+          <button appBaseButton variant="ghost" size="sm" type="button" (click)="reset()">Reiniciar</button>
+        </div>
+      </app-base-card>
+    </div>
+
+    <app-code-block title="set / update" [code]="signalSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">2 · Valores derivados con computed()</h2>
+    <p>Con <code class="inline-code">computed()</code> calculamos valores a partir de otros signals. Solo se recalcula cuando cambian sus dependencias.</p>
+    <app-code-block title="computed()" [code]="computedSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">3 · Inmutabilidad: arrays y objetos</h2>
+    <p>Los signals <strong>no detectan mutaciones internas</strong>. Debemos crear nuevas referencias para que Angular se entere del cambio.</p>
+    <app-code-block title="Actualizar sin mutar" [code]="inmutableSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">4 · linkedSignal y linkedSignal con modelo</h2>
+    <p><code class="inline-code">linkedSignal</code> enlaza un signal a otro, pero puede modificarse independientemente.</p>
+    <app-base-card title="Demo: linkedSignal" subtitle="Me gusta (inicial desde input)">
+      <app-like-button [initialLikes]="3" />
+    </app-base-card>
+    <app-code-block title="linkedSignal" [code]="linkedSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">5 · Registro de movimientos</h2>
+    <app-base-card title="Log reactivo" subtitle="Cada acción queda registrada">
+      <div class="l02-log">
+        @if (ultimosCinco().length === 0) {
+          <p class="dim">Aún no hay movimientos.</p>
+        } @else {
+          <ol class="l02-log__list">
+            @for (entry of ultimosCinco(); track entry.id) {
+              <li [class.l02-log__item--new]="entry.id === log().length">{{ entry.hora }} · {{ entry.texto }}</li>
+            }
+          </ol>
+        }
+      </div>
+    </app-base-card>
+  </section>
+</app-lesson-shell>

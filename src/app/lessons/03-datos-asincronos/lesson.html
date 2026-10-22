@@ -1,0 +1,45 @@
+<app-lesson-shell [lesson]="lesson">
+  <section class="lesson__section">
+    <h2 class="lesson__h2">1 · HttpClient + interceptor</h2>
+    <p>Registramos <code class="inline-code">provideHttpClient(withFetch(), withInterceptors([swapiInterceptor]))</code>. Los servicios escriben rutas relativas y el interceptor reescribe contra las bases configuradas con reintentos.</p>
+    <app-code-block title="Configuración" [code]="httpSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">2 · httpResource: tres estados con signals</h2>
+    <p><code class="inline-code">httpResource</code> convierte una petición HTTP en un recurso reactivo con signals. Cambiar <code class="inline-code">id()</code> relanza la petición automáticamente.</p>
+
+    <app-base-card title="Personaje de SWAPI" subtitle="httpResource< Person >">
+      <div class="l03-panel stack">
+        <div class="row">
+          <button appBaseButton variant="subtle" size="sm" type="button" (click)="prev()" [disabled]="id() <= 1">← Anterior</button>
+          <span class="dim">Personaje #{{ id() }}</span>
+          <button appBaseButton variant="subtle" size="sm" type="button" (click)="next()" [disabled]="id() >= 10">Siguiente →</button>
+          <button appBaseButton variant="ghost" size="sm" type="button" (click)="reload()">Recargar</button>
+        </div>
+
+        <div class="l03-result">
+          @if (person.isLoading()) {
+            <app-loading-state label="Cargando personaje..." />
+          } @else if (person.error()) {
+            <app-error-state [message]="errorMsg()" (retry)="reload()" />
+          } @else if (person.hasValue()) {
+            <div class="l03-card stack stack-sm">
+              <p><strong>{{ person.value().name }}</strong></p>
+              <p class="dim">Altura: {{ person.value().height }} cm · Masa: {{ person.value().mass }} kg</p>
+              <p class="dim">Género: {{ person.value().gender }} · Nacimiento: {{ person.value().birth_year }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    </app-base-card>
+
+    <app-code-block title="Uso de httpResource" [code]="resourceSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">3 · Estados: loading / success / error</h2>
+    <p>Siempre manejamos los tres estados. El interceptor también gestiona reintentos con mirrors en caso de fallo de red.</p>
+    <app-code-block title="Patrón" [code]="statesSnippet" />
+  </section>
+</app-lesson-shell>
