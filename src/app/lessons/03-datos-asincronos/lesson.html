@@ -1,21 +1,64 @@
 <app-lesson-shell [lesson]="lesson">
   <section class="lesson__section">
     <h2 class="lesson__h2">1 · HttpClient + interceptor</h2>
-    <p>Registramos <code class="inline-code">provideHttpClient(withFetch(), withInterceptors([swapiInterceptor]))</code>. Los servicios escriben rutas relativas y el interceptor reescribe contra las bases configuradas con reintentos.</p>
+    <p>
+      Registramos
+      <code class="inline-code">provideHttpClient(withFetch(), withInterceptors([swapiInterceptor]))</code>.
+      Los componentes y servicios escriben rutas relativas y el interceptor las reescribe contra la
+      base configurada; si esa base falla, reintenta con los mirrors.
+    </p>
     <app-code-block title="Configuración" [code]="httpSnippet" />
   </section>
 
   <section class="lesson__section">
     <h2 class="lesson__h2">2 · httpResource: tres estados con signals</h2>
-    <p><code class="inline-code">httpResource</code> convierte una petición HTTP en un recurso reactivo con signals. Cambiar <code class="inline-code">id()</code> relanza la petición automáticamente.</p>
+    <p>
+      <code class="inline-code">httpResource</code> convierte una petición HTTP en un recurso
+      reactivo. La URL se calcula dentro de una función, así que cambiar
+      <code class="inline-code">id()</code> relanza la petición automáticamente y cancela la
+      anterior.
+    </p>
 
-    <app-base-card title="Personaje de SWAPI" subtitle="httpResource< Person >">
+    <app-base-card title="Personaje de SWAPI" subtitle="httpResource&lt;Person&gt;">
       <div class="l03-panel stack">
+        <div class="row row--between">
+          <div class="row">
+            <button
+              appBaseButton
+              variant="subtle"
+              size="sm"
+              type="button"
+              (click)="prev()"
+              [disabled]="id() <= 1"
+            >
+              ← Anterior
+            </button>
+            <span class="dim">Personaje #{{ id() }}</span>
+            <button
+              appBaseButton
+              variant="subtle"
+              size="sm"
+              type="button"
+              (click)="next()"
+              [disabled]="id() >= 10"
+            >
+              Siguiente →
+            </button>
+          </div>
+
+          <app-base-badge [tone]="statusTone()">{{ status() }}</app-base-badge>
+        </div>
+
         <div class="row">
-          <button appBaseButton variant="subtle" size="sm" type="button" (click)="prev()" [disabled]="id() <= 1">← Anterior</button>
-          <span class="dim">Personaje #{{ id() }}</span>
-          <button appBaseButton variant="subtle" size="sm" type="button" (click)="next()" [disabled]="id() >= 10">Siguiente →</button>
-          <button appBaseButton variant="ghost" size="sm" type="button" (click)="reload()">Recargar</button>
+          <button appBaseButton variant="ghost" size="sm" type="button" (click)="reload()">
+            Recargar
+          </button>
+          <button appBaseButton variant="subtle" size="sm" type="button" (click)="probar404()">
+            Probar un 404
+          </button>
+          @if (lastRequestMs(); as ms) {
+            <span class="dim">Última recarga: {{ ms }} ms</span>
+          }
         </div>
 
         <div class="l03-result">
@@ -23,12 +66,18 @@
             <app-loading-state label="Cargando personaje..." />
           } @else if (person.error()) {
             <app-error-state [message]="errorMsg()" (retry)="reload()" />
-          } @else if (person.hasValue()) {
+          } @else if (person.value(); as personaje) {
             <div class="l03-card stack stack-sm">
-              <p><strong>{{ person.value().name }}</strong></p>
-              <p class="dim">Altura: {{ person.value().height }} cm · Masa: {{ person.value().mass }} kg</p>
-              <p class="dim">Género: {{ person.value().gender }} · Nacimiento: {{ person.value().birth_year }}</p>
+              <p><strong>{{ personaje.name }}</strong></p>
+              <p class="dim">
+                Altura: {{ personaje.height }} cm · Masa: {{ personaje.mass }} kg
+              </p>
+              <p class="dim">
+                Género: {{ personaje.gender }} · Nacimiento: {{ personaje.birth_year }}
+              </p>
             </div>
+          } @else {
+            <app-empty-state title="Sin datos" message="Elige un personaje para empezar." />
           }
         </div>
       </div>
@@ -39,7 +88,19 @@
 
   <section class="lesson__section">
     <h2 class="lesson__h2">3 · Estados: loading / success / error</h2>
-    <p>Siempre manejamos los tres estados. El interceptor también gestiona reintentos con mirrors en caso de fallo de red.</p>
-    <app-code-block title="Patrón" [code]="statesSnippet" />
+    <p>
+      Siempre manejamos los tres estados. El interceptor también gestiona reintentos con mirrors en
+      caso de fallo de red; un 404, en cambio, es definitivo y se muestra tal cual.
+    </p>
+    <app-code-block title="Patrón de plantilla" [code]="statesSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">4 · Medir la recarga</h2>
+    <p>
+      Podemos medir cuánto tarda una recarga manual sin envolver el recurso: guardamos el instante de
+      inicio y un <code class="inline-code">effect()</code> observa cuándo deja de estar cargando.
+    </p>
+    <app-code-block title="performance.now() + effect()" [code]="timingSnippet" />
   </section>
 </app-lesson-shell>

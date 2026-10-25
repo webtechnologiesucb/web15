@@ -1,0 +1,144 @@
+<app-lesson-shell [lesson]="lesson">
+  <section class="lesson__section">
+    <h2 class="lesson__h2">1 · Transiciones CSS gobernadas por el estado</h2>
+    <p>
+      Una transición no necesita JavaScript: una clase en el elemento y una regla CSS con
+      <code class="inline-code">transition</code> bastan. El componente sólo cambia el estado.
+    </p>
+
+    <app-base-card title="Lista animada" subtitle="Entrada suave y salida animada">
+      <div class="l09-panel stack">
+        <div class="row">
+          <button appBaseButton variant="accent" size="sm" type="button" (click)="add()">
+            Añadir droide
+          </button>
+          @if (leaving().length > 0) {
+            <app-base-badge tone="accent">animando la salida…</app-base-badge>
+          }
+        </div>
+
+        @if (items().length === 0) {
+          <app-empty-state
+            icon="🤖"
+            title="No queda ningún droide"
+            message="Añade uno para volver a probar la animación de entrada."
+          />
+        } @else {
+          <ul class="l09-list">
+            @for (item of items(); track item.id) {
+              <li
+                class="l09-item"
+                [class.l09-item--leaving]="isLeaving(item.id)"
+                (animationend)="onLeaveEnd($event, item.id)"
+              >
+                <div class="stack-sm">
+                  <strong>{{ item.name }}</strong>
+                  <span class="dim">{{ item.kind }}</span>
+                </div>
+                <button
+                  appBaseButton
+                  variant="danger"
+                  size="sm"
+                  type="button"
+                  [disabled]="isLeaving(item.id)"
+                  (click)="remove(item.id)"
+                >
+                  Quitar
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </app-base-card>
+
+    <p class="dim">
+      Quitar un elemento lo marca como «saliendo» y espera al evento
+      <code class="inline-code">animationend</code>. Hasta entonces sigue en el DOM, así que la
+      animación de salida se ve completa.
+    </p>
+
+    <app-code-block title="Transición CSS" [code]="transitionSnippet" />
+    <app-code-block title="Animar el desmontaje" [code]="leaveSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">2 · Skeletons durante la carga</h2>
+    <p>
+      Un buen estado de carga mantiene la forma del contenido. <code class="inline-code">app-loading-state</code>
+      tiene una variante <code class="inline-code">skeleton</code> que pinta una rejilla de bloques
+      con animación de brillo.
+    </p>
+
+    <app-base-card title="Carga simulada" subtitle="700 ms de espera">
+      <div class="l09-panel stack">
+        <div class="row">
+          <button
+            appBaseButton
+            variant="primary"
+            size="sm"
+            type="button"
+            [disabled]="loading()"
+            (click)="simulateLoad()"
+          >
+            {{ loaded() ? 'Volver a cargar' : 'Simular carga' }}
+          </button>
+          @if (loaded()) {
+            <app-base-badge tone="success">datos listos</app-base-badge>
+          }
+        </div>
+
+        @if (loading()) {
+          <app-loading-state variant="skeleton" [count]="3" label="Cargando tarjetas..." />
+        } @else if (loaded()) {
+          <div class="grid">
+            <app-base-card title="Droide de protocolo" subtitle="C-3PO">
+              <p class="dim">Fluido en más de seis millones de formas de comunicación.</p>
+            </app-base-card>
+            <app-base-card title="Droide astromecánico" subtitle="R2-D2">
+              <p class="dim">Navegación, reparaciones y algún que otro secreto.</p>
+            </app-base-card>
+            <app-base-card title="Droide de seguridad" subtitle="K-2SO">
+              <p class="dim">Directo, sincero y un poco sarcástico.</p>
+            </app-base-card>
+          </div>
+        } @else {
+          <p class="dim">Pulsa el botón para ver el skeleton en acción.</p>
+        }
+      </div>
+    </app-base-card>
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">3 · &#64;defer: trocear el bundle</h2>
+    <p>
+      El bloque <code class="inline-code">&#64;defer</code> separa un componente en su propio chunk.
+      Con <code class="inline-code">on viewport</code> se descarga cuando el bloque se acerca a la
+      pantalla. Este panel está justo debajo: desplázate para cargarlo.
+    </p>
+
+    @defer (on viewport) {
+      <app-deferred-panel />
+    } @placeholder (minimum 200ms) {
+      <div class="l09-placeholder">
+        <span aria-hidden="true">📦</span>
+        <p class="dim">Panel diferido: aparecerá al entrar en el viewport.</p>
+      </div>
+    } @loading (minimum 300ms) {
+      <app-loading-state label="Cargando el chunk diferido..." />
+    } @error {
+      <app-empty-state icon="⚠️" title="No se pudo cargar el bloque diferido" />
+    }
+
+    <app-code-block title="@defer" [code]="deferSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">4 · Respetar prefers-reduced-motion</h2>
+    <p>
+      Las animaciones no son obligatorias para todo el mundo. Si el sistema pide movimiento
+      reducido, las desactivamos sin cambiar la lógica.
+    </p>
+    <app-code-block title="Accesibilidad" [code]="reducedMotionSnippet" />
+  </section>
+</app-lesson-shell>

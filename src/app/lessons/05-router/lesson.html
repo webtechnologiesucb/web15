@@ -1,0 +1,114 @@
+<app-lesson-shell [lesson]="lesson">
+  <section class="lesson__section">
+    <h2 class="lesson__h2">1 · RouterLink y RouterLinkActive</h2>
+    <p>
+      Los enlaces del router son declarativos y no recargan la página.
+      <code class="inline-code">RouterLinkActive</code> añade una clase cuando la URL activa
+      coincide con el enlace.
+    </p>
+
+    <div class="chips">
+      @for (resource of resources; track resource) {
+        <a
+          class="chip"
+          [routerLink]="['/', resource]"
+          routerLinkActive="chip--active"
+          ariaCurrentWhenActive="page"
+        >
+          <span aria-hidden="true">{{ meta[resource].icon }}</span>
+          {{ meta[resource].plural }}
+        </a>
+      }
+    </div>
+
+    <app-base-card title="URL actual" subtitle="Router.events + NavigationEnd">
+      <p class="field-label">Estás en</p>
+      <pre class="l05-json">{{ currentUrl() }}</pre>
+      <p class="dim">
+        Los chips de arriba navegan al explorador real. Al volver, la lección sigue en el mismo
+        sitio.
+      </p>
+    </app-base-card>
+
+    <app-code-block title="Enlaces" [code]="linksSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">2 · Parámetros de ruta como inputs</h2>
+    <p>
+      Con <code class="inline-code">withComponentInputBinding()</code>, los parámetros
+      <code class="inline-code">:resource</code> y <code class="inline-code">:id</code> llegan al
+      componente como <code class="inline-code">input()</code>. Ya no hace falta inyectar
+      <code class="inline-code">ActivatedRoute</code> para leerlos.
+    </p>
+
+    <app-base-card title="Demo: query param reactivo" subtitle="Sin salir de la lección">
+      <div class="row">
+        @for (resource of resources; track resource) {
+          <button
+            appBaseButton
+            size="sm"
+            type="button"
+            [variant]="demoResource() === resource ? 'primary' : 'ghost'"
+            (click)="setDemo(resource)"
+          >
+            {{ meta[resource].singular }}
+          </button>
+        }
+        <button appBaseButton size="sm" variant="subtle" type="button" (click)="clearDemo()">
+          Limpiar
+        </button>
+      </div>
+
+      <p class="dim">
+        Query param <code class="inline-code">demo</code>:
+        <strong>{{ demoResource() }}</strong> · {{ demoMeta().plural }}
+      </p>
+      <p class="dim">
+        La URL cambia sin recargar el componente; el estado activo se deriva de la URL.
+      </p>
+    </app-base-card>
+
+    <app-code-block title="Parámetros como inputs" [code]="paramsSnippet" />
+    <app-code-block title="provideRouter" [code]="configSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">3 · Carga diferida y títulos</h2>
+    <p>
+      Cada lección y cada vista se carga con <code class="inline-code">loadComponent</code>: sólo
+      se descarga el chunk cuando la ruta se visita. El <code class="inline-code">title</code> de la
+      ruta actualiza el título de la pestaña.
+    </p>
+
+    <div class="l05-routes">
+      @for (row of routeRows; track row.path) {
+        <div class="l05-route">
+          <code class="inline-code">/{{ row.path }}</code>
+          <span class="dim">{{ row.component }}</span>
+          <span class="muted">{{ row.title }}</span>
+        </div>
+      }
+    </div>
+
+    <app-code-block title="Rutas" [code]="routesSnippet" />
+    <app-code-block title="Título y comodín" [code]="titleSnippet" />
+
+    <p class="dim">
+      La ruta <code class="inline-code">'**'</code> va al final: cualquier URL que no encaje antes
+      cae en la página 404.
+    </p>
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">4 · Un vistazo al estado activo</h2>
+    <div class="row">
+      <app-base-badge tone="primary">recurso demo: {{ demoMeta().singular }}</app-base-badge>
+      <app-base-badge tone="accent">query param: demo={{ demoResource() }}</app-base-badge>
+    </div>
+    <p class="dim">
+      Cambia el query param con los botones de arriba y observa cómo se actualizan las insignias y
+      la URL sin volver a montar la lección.
+    </p>
+  </section>
+</app-lesson-shell>

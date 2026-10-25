@@ -1,0 +1,114 @@
+<app-lesson-shell [lesson]="lesson">
+  <section class="lesson__section">
+    <h2 class="lesson__h2">1 · @Injectable e inject()</h2>
+    <p>
+      La lógica de red vive en <code class="inline-code">SwapiService</code>. El componente no lo
+      construye con <code class="inline-code">new</code>: lo pide al inyector con
+      <code class="inline-code">inject()</code>. Como está declarado
+      <code class="inline-code">providedIn: 'root'</code>, es un singleton para toda la aplicación.
+    </p>
+
+    <div class="l04-panel stack">
+      <app-base-card title="Servicio singleton" subtitle="Dos inject() del mismo token">
+        <div class="l04-stats row row--between">
+          <span class="dim">¿Misma instancia?</span>
+          <app-base-badge [tone]="isSingleton ? 'success' : 'danger'">
+            {{ isSingleton ? 'Sí · singleton' : 'No' }}
+          </app-base-badge>
+        </div>
+        <p class="dim">
+          Pedir <code class="inline-code">inject(SwapiService)</code> dos veces devuelve exactamente
+          el mismo objeto.
+        </p>
+      </app-base-card>
+
+      <app-base-card title="Configuración inyectada" subtitle="InjectionToken SWAPI_BASE_URLS">
+        <p class="field-label">Bases disponibles (en orden de reintento)</p>
+        <ol class="l04-bases">
+          @for (base of bases; track base) {
+            <li><code class="inline-code">{{ base }}</code></li>
+          }
+        </ol>
+      </app-base-card>
+    </div>
+
+    <app-code-block title="inject()" [code]="injectSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">2 · El servicio en acción</h2>
+    <p>
+      El componente llama al servicio y gestiona los estados con signals. La petición usa una ruta
+      relativa (<code class="inline-code">/people/</code>): el interceptor añade la base real.
+    </p>
+
+    <app-base-card title="Personajes" subtitle="SwapiService.list('people', 1)">
+      <div class="l04-panel stack">
+        <div class="row">
+          <button
+            appBaseButton
+            variant="accent"
+            size="sm"
+            type="button"
+            [disabled]="state() === 'loading'"
+            (click)="loadPeople()"
+          >
+            {{ loadedOnce() ? 'Volver a cargar' : 'Cargar personajes' }}
+          </button>
+          @if (state() === 'success') {
+            <span class="dim">{{ total() }} personajes en total</span>
+          }
+        </div>
+
+        @if (state() === 'loading') {
+          <app-loading-state label="Consultando SwapiService..." />
+        } @else if (state() === 'error') {
+          <app-error-state [message]="errorMsg()" (retry)="loadPeople()" />
+        } @else if (state() === 'success') {
+          <ul class="data-list">
+            @for (person of people(); track person.url) {
+              <li class="data-list__item row row--between">
+                <strong>{{ person.name }}</strong>
+                <span class="dim">{{ person.height }} cm · {{ person.birth_year }}</span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="dim">Pulsa el botón para hacer una petición real.</p>
+        }
+      </div>
+    </app-base-card>
+
+    <app-code-block title="SwapiService" [code]="serviceSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">3 · Genéricos que deducen el tipo</h2>
+    <p>
+      El mapa <code class="inline-code">SwapiResources</code> asocia cada nombre de recurso con su
+      entidad. Así un genérico <code class="inline-code">K extends ResourceName</code> deduce el tipo
+      de retorno a partir de la URL.
+    </p>
+    <app-code-block title="Genéricos + keyof" [code]="genericsSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">4 · Un token para la configuración</h2>
+    <p>
+      Las URLs no se escriben en los componentes: se piden con un
+      <code class="inline-code">InjectionToken</code>. Cambiar de mirror es cambiar
+      <code class="inline-code">environment.ts</code>, no el código que consume el servicio.
+    </p>
+    <app-code-block title="InjectionToken" [code]="tokenSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">5 · Jerarquía de inyectores</h2>
+    <p>
+      Angular busca un provider de más cercano a más lejano. Por eso un
+      <code class="inline-code">providers</code> local puede sustituir una dependencia sólo en un
+      subárbol (lo veremos en la lección 08).
+    </p>
+    <app-code-block title="Cómo resuelve Angular" [code]="hierarchySnippet" />
+  </section>
+</app-lesson-shell>

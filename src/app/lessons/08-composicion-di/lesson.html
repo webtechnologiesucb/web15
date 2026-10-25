@@ -1,0 +1,146 @@
+<app-lesson-shell [lesson]="lesson">
+  <section class="lesson__section">
+    <h2 class="lesson__h2">1 · Composición con ng-content y slots</h2>
+    <p>
+      Un componente no tiene por qué conocer el contenido que muestra:
+      <code class="inline-code">&lt;ng-content&gt;</code> deja huecos y
+      <code class="inline-code">select</code> decide qué elemento va en cada uno. La tarjeta de la
+      demo tiene cuatro zonas: icono, acciones, cuerpo y pie.
+    </p>
+
+    <div class="l08-row">
+      <span class="dim">Tono de la directiva:</span>
+      @for (option of tones; track option) {
+        <button
+          appBaseButton
+          size="sm"
+          type="button"
+          [variant]="tone() === option ? 'primary' : 'ghost'"
+          (click)="setTone(option)"
+        >
+          {{ option }}
+        </button>
+      }
+      <button appBaseButton size="sm" variant="subtle" type="button" (click)="toggleIcon()">
+        {{ showIcon() ? 'Quitar icono' : 'Añadir icono' }}
+      </button>
+    </div>
+
+    <app-composed-card title="Tarjeta compuesta">
+      @if (showIcon()) {
+        <span card-icon class="l08-icon" [appHighlight]="tone()">✦</span>
+      }
+
+      <app-base-badge card-actions tone="primary">slot de acciones</app-base-badge>
+
+      <p>
+        Este párrafo es <strong>contenido por defecto</strong>: no lleva ningún atributo de slot, así
+        que cae en el <code class="inline-code">&lt;ng-content /&gt;</code> sin
+        <code class="inline-code">select</code>.
+      </p>
+      <p class="dim">
+        El icono lleva la directiva <code class="inline-code">appHighlight</code>. La tarjeta la
+        encuentra con <code class="inline-code">contentChild()</code> y lo muestra en la cabecera.
+      </p>
+
+      <button
+        card-footer
+        appBaseButton
+        size="sm"
+        variant="accent"
+        type="button"
+        (click)="toggleIcon()"
+      >
+        {{ showIcon() ? 'Quitar el icono' : 'Volver a poner el icono' }}
+      </button>
+    </app-composed-card>
+
+    <p class="dim">
+      Al quitar el icono, <code class="inline-code">contentChild()</code> pasa a
+      <code class="inline-code">undefined</code> y la tarjeta deja de mostrar el aviso: la consulta
+      es reactiva.
+    </p>
+
+    <app-code-block title="Proyección de contenido" [code]="projectionSnippet" />
+    <app-code-block title="contentChild()" [code]="contentChildSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">2 · Directiva de atributo y host bindings</h2>
+    <p>
+      Una directiva de atributo decora el elemento que la usa. Los
+      <strong>host bindings</strong> escriben clases, estilos y atributos en ese elemento sin crear
+      un wrapper.
+    </p>
+
+    <p class="l08-highlight-demo" [appHighlight]="tone()">
+      Este párrafo usa <code class="inline-code">appHighlight="{{ tone() }}"</code>.
+    </p>
+
+    <app-code-block title="appHighlight" [code]="directiveSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">3 · Directiva estructural (reto)</h2>
+    <p>
+      Una directiva estructural recibe un <code class="inline-code">TemplateRef</code> y decide
+      cuántas veces lo inserta en un <code class="inline-code">ViewContainerRef</code>. El asterisco
+      del uso es azúcar de Angular.
+    </p>
+
+    <div class="l08-row">
+      @for (count of [1, 3, 5]; track count) {
+        <button
+          appBaseButton
+          size="sm"
+          type="button"
+          [variant]="repeatCount() === count ? 'primary' : 'ghost'"
+          (click)="setRepeat(count)"
+        >
+          ×{{ count }}
+        </button>
+      }
+    </div>
+
+    <ul class="l08-repeat-list">
+      <li class="l08-repeat" *appRepeat="repeatCount(); let i = $index">
+        Elemento repetido #{{ i + 1 }}
+      </li>
+    </ul>
+
+    <app-code-block title="appRepeat" [code]="structuralSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">4 · providers por componente</h2>
+    <p>
+      La configuración de SWAPI es un <code class="inline-code">InjectionToken</code> con provider
+      root. Un componente puede declarar otro provider y crear un ámbito propio: sus hijos verán el
+      valor local, el resto de la aplicación seguirá viendo el root.
+    </p>
+
+    <div class="l08-providers">
+      <app-base-card title="Provider root" subtitle="Resto de la aplicación">
+        <ul class="l08-bases">
+          @for (base of rootBases; track base) {
+            <li><code class="inline-code">{{ base }}</code></li>
+          }
+        </ul>
+      </app-base-card>
+
+      <app-local-provider-demo />
+    </div>
+
+    <app-code-block title="providers locales" [code]="providersSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">5 · Estilos encapsulados</h2>
+    <p>
+      Los <code class="inline-code">styles</code> de un componente se encapsulan por defecto
+      (<code class="inline-code">ViewEncapsulation.Emulated</code>): Angular añade atributos únicos
+      para que <code class="inline-code">.composed-card</code> no se escape del componente.
+    </p>
+    <app-code-block title="ViewEncapsulation" [code]="encapsulationSnippet" />
+  </section>
+</app-lesson-shell>

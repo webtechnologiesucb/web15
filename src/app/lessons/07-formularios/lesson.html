@@ -1,0 +1,110 @@
+<app-lesson-shell [lesson]="lesson">
+  <section class="lesson__section">
+    <h2 class="lesson__h2">1 · FormControl, FormGroup y validadores</h2>
+    <p>
+      Un formulario reactivo se declara en la clase, no en la plantilla. Cada control conoce su
+      valor, su estado (<code class="inline-code">touched</code>,
+      <code class="inline-code">dirty</code>) y sus errores de validación.
+    </p>
+
+    <app-base-card title="Búsqueda en SWAPI" subtitle="valueChanges + debounceTime + switchMap">
+      <form class="l07-form stack" [formGroup]="form">
+        <div class="l07-controls">
+          <label class="l07-field">
+            <span class="field-label">Recurso</span>
+            <select class="input" formControlName="resource">
+              @for (resource of resources; track resource) {
+                <option [value]="resource">{{ meta[resource].plural }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="l07-field">
+            <span class="field-label">Buscar (mínimo 3 caracteres)</span>
+            <input
+              class="input"
+              type="search"
+              formControlName="query"
+              placeholder="luke, tatooine, hope..."
+              autocomplete="off"
+            />
+          </label>
+        </div>
+
+        <label class="l07-check row">
+          <input type="checkbox" formControlName="onlyFavorites" />
+          <span>Sólo favoritos (filtra los resultados ya cargados)</span>
+        </label>
+
+        <p class="l07-status dim">
+          Estado:
+          <app-base-badge [tone]="statusTone()">{{ state() }}</app-base-badge>
+          · formulario {{ form.valid ? 'válido' : 'inválido' }}
+          · query {{ form.controls.query.touched ? 'tocada' : 'sin tocar' }}
+          · {{ requestCount() }} petición(es)
+        </p>
+
+        @if (form.controls.query.hasError('minlength')) {
+          <p class="l07-status l07-status--error">
+            La búsqueda necesita al menos 3 caracteres.
+          </p>
+        }
+
+        @if (state() === 'loading') {
+          <app-loading-state label="Buscando en SWAPI..." />
+        } @else if (state() === 'error') {
+          <app-error-state [message]="errorMsg()" />
+        } @else if (state() === 'success') {
+          <p class="dim">
+            {{ total() }} resultado(s) en el servidor · {{ visibleResults().length }} visibles.
+          </p>
+
+          @if (visibleResults().length === 0) {
+            <app-empty-state
+              icon="🔍"
+              title="Sin resultados visibles"
+              [message]="
+                onlyFavorites()
+                  ? 'Ningún resultado está en favoritos. Marca alguno desde el explorador.'
+                  : 'Prueba con otro término.'
+              "
+            />
+          } @else {
+            <div class="grid">
+              @for (item of visibleResults(); track item.url) {
+                <app-resource-card [resource]="form.controls.resource.value" [item]="item" />
+              }
+            </div>
+          }
+        } @else if (state() === 'invalid') {
+          <p class="dim">Escribe al menos 3 caracteres para lanzar la búsqueda.</p>
+        } @else {
+          <p class="dim">Escribe un término para buscar personajes, planetas, películas...</p>
+        }
+      </form>
+    </app-base-card>
+
+    <app-code-block title="El formulario" [code]="formSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">2 · La tubería de búsqueda</h2>
+    <p>
+      <code class="inline-code">debounceTime</code> evita una petición por tecla y
+      <code class="inline-code">switchMap</code> cancela la anterior si llega una nueva. El
+      resultado es una única suscripción que se limpia al destruir el componente.
+    </p>
+    <app-code-block title="valueChanges" [code]="pipelineSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">3 · El estado del formulario</h2>
+    <p>
+      No dupliques <code class="inline-code">valid</code> o
+      <code class="inline-code">touched</code> en signals: el propio formulario ya es reactivo y la
+      plantilla puede leerlos.
+    </p>
+    <app-code-block title="valid / touched / errors" [code]="statusSnippet" />
+    <app-code-block title="Filtro sólo favoritos" [code]="onlyFavoritesSnippet" />
+  </section>
+</app-lesson-shell>

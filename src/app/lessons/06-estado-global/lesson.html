@@ -1,0 +1,169 @@
+<app-lesson-shell [lesson]="lesson">
+  <section class="lesson__section">
+    <h2 class="lesson__h2">1 · Un servicio es un singleton</h2>
+    <p>
+      Un servicio <code class="inline-code">providedIn: 'root'</code> se crea una sola vez. La barra
+      lateral, la portada y esta lección comparten el mismo
+      <code class="inline-code">ProgressStore</code>: si marcas una lección aquí, el progreso de la
+      barra lateral cambia al instante.
+    </p>
+
+    <div class="l06-panel stack">
+      <app-base-card title="Progreso de la ruta" subtitle="ProgressStore">
+        <div class="panel__row">
+          <span class="muted">Completadas</span>
+          <strong class="panel__percent">{{ percent() }}%</strong>
+        </div>
+        <div
+          class="bar"
+          role="progressbar"
+          aria-label="Progreso de la ruta"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          [attr.aria-valuenow]="percent()"
+        >
+          <span class="bar__fill" [style.width.%]="percent()"></span>
+        </div>
+        <p class="dim">{{ done() }} de {{ total }} lecciones completadas.</p>
+
+        @if (completed()) {
+          <app-base-badge tone="success">Lección 06 completada</app-base-badge>
+        } @else {
+          <app-base-badge>Lección 06 pendiente</app-base-badge>
+        }
+
+        <p class="dim">
+          Siguiente pendiente:
+          @if (nextPending(); as next) {
+            <strong>{{ next.title }}</strong>
+          } @else {
+            <strong>¡ruta completada!</strong>
+          }
+        </p>
+
+        <div class="row">
+          <button appBaseButton variant="subtle" size="sm" type="button" (click)="resetProgress()">
+            Reiniciar progreso
+          </button>
+          <button appBaseButton variant="ghost" size="sm" type="button" (click)="toggleTheme()">
+            Tema: {{ themeLabel() }}
+          </button>
+        </div>
+      </app-base-card>
+
+      <app-base-card title="Tema global" subtitle="ThemeService">
+        <p class="dim">
+          El tema también es un servicio singleton: un <code class="inline-code">effect()</code>
+          escribe <code class="inline-code">data-theme</code> en <code class="inline-code">&lt;html&gt;</code>
+          y en localStorage.
+        </p>
+        <app-base-badge [tone]="theme.theme() === 'light' ? 'primary' : 'default'">
+          {{ theme.theme() }}
+        </app-base-badge>
+      </app-base-card>
+    </div>
+
+    <app-code-block title="El store" [code]="storeSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">2 · Favoritos compartidos</h2>
+    <p>
+      El mismo patrón: signals privados, acciones públicas y estado derivado con
+      <code class="inline-code">computed()</code>. Esta demo usa el
+      <code class="inline-code">FavoritesStore</code> real de la aplicación; abre
+      <a routerLink="/favoritos">/favoritos</a> y verás la misma lista.
+    </p>
+
+    <app-base-card title="Candidatos" subtitle="Marca tus favoritos">
+      <div class="l06-candidates">
+        @for (candidate of candidates; track candidate.url) {
+          <div class="l06-candidate">
+            <div class="stack-sm">
+              <strong>{{ candidate.name }}</strong>
+              <small class="dim">{{ candidate.detail }}</small>
+            </div>
+            <span class="spacer"></span>
+            <button
+              appBaseButton
+              size="sm"
+              type="button"
+              [variant]="isFavorite(candidate.url) ? 'accent' : 'ghost'"
+              [attr.aria-pressed]="isFavorite(candidate.url)"
+              (click)="toggleFavorite(candidate)"
+            >
+              {{ isFavorite(candidate.url) ? 'Quitar' : 'Añadir' }}
+            </button>
+          </div>
+        }
+      </div>
+
+      <p class="dim">{{ lastAction() }}</p>
+    </app-base-card>
+
+    <app-base-card title="Favoritos guardados" subtitle="FavoritesStore.items()">
+      <div class="row row--between">
+        <app-base-badge tone="accent">{{ favoriteCount() }} favorito(s)</app-base-badge>
+        <button
+          appBaseButton
+          variant="danger"
+          size="sm"
+          type="button"
+          [disabled]="favoriteCount() === 0"
+          (click)="clearFavorites()"
+        >
+          Vaciar favoritos
+        </button>
+      </div>
+
+      @if (favoriteRows().length === 0) {
+        <app-empty-state
+          icon="☆"
+          title="Sin favoritos todavía"
+          message="Pulsa Añadir en cualquier candidato."
+        />
+      } @else {
+        <ul class="l06-saved-list">
+          @for (row of favoriteRows(); track row.url) {
+            <li class="l06-saved">
+              <span>{{ row.name }}</span>
+              <code class="dim">{{ row.url }}</code>
+            </li>
+          }
+        </ul>
+      }
+    </app-base-card>
+
+    <app-code-block title="Consumir el store" [code]="consumerSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">3 · Persistencia y estado derivado</h2>
+    <p>
+      Un <code class="inline-code">effect()</code> se ejecuta cuando cambian los signals que lee.
+      Aquí lo usamos para escribir en localStorage; al arrancar, el store lee y valida lo guardado.
+    </p>
+
+    <app-base-card title="Lo que hay en localStorage" subtitle="Sólo lectura">
+      <p class="field-label">Claves usadas</p>
+      <ul class="l06-keys">
+        @for (key of storageKeys; track key) {
+          <li><code class="inline-code">{{ key }}</code></li>
+        }
+      </ul>
+      <pre class="l05-json">{{ storedPreview() }}</pre>
+    </app-base-card>
+
+    <app-code-block title="Estado derivado" [code]="progressSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">4 · ¿Y NgRx SignalStore?</h2>
+    <p>
+      Para este proyecto, un servicio con signals es suficiente. Si el estado crece (múltiples
+      entidades, reglas, plugins), NgRx SignalStore aporta estructura sin cambiar el modelo mental.
+    </p>
+    <app-code-block title="La alternativa" [code]="signalStoreSnippet" />
+    <app-code-block title="effect() frente a linkedSignal" [code]="linkedSignalNote" />
+  </section>
+</app-lesson-shell>

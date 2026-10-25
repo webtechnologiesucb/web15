@@ -1,14 +1,18 @@
 // src/app/lessons/02-signals-y-estado/lesson.ts
 // Lección 02 · Estado reactivo con signals
-import { Component, computed, linkedSignal, signal } from '@angular/core';
+//
+// Todo lo que se mueve en esta lección es estado local: un signal escribible,
+// valores derivados con computed() y un array que se reemplaza (nunca se muta)
+// para que Angular se entere del cambio.
+import { Component, computed, signal } from '@angular/core';
 
+import { LikeButton } from '../../shared/demo/like-button';
+import { RatingStars } from '../../shared/demo/rating-stars';
 import { requireLesson } from '../../data/lessons';
 import { LessonShell } from '../../shared/lesson/lesson-shell';
-import { BaseBadge } from '../../shared/ui/base-badge';
 import { BaseButton } from '../../shared/ui/base-button';
 import { BaseCard } from '../../shared/ui/base-card';
 import { CodeBlock } from '../../shared/ui/code-block';
-import { LikeButton } from '../../shared/demo/like-button';
 
 interface LogEntry {
   id: number;
@@ -18,7 +22,7 @@ interface LogEntry {
 
 @Component({
   selector: 'app-lesson-02',
-  imports: [LessonShell, BaseCard, BaseBadge, BaseButton, CodeBlock, LikeButton],
+  imports: [LessonShell, BaseCard, BaseButton, CodeBlock, LikeButton, RatingStars],
   templateUrl: './lesson.html',
   styles: ':host { display: contents; }',
 })
@@ -31,26 +35,34 @@ export class Lesson02Signals {
   /** Estado derivado con computed(): nunca se duplica. */
   protected readonly doble = computed(() => this.contador() * 2);
 
-  protected readonly parOImpar = computed(() =>
-    this.contador() === 0 ? 'Cero' : this.contador() % 2 === 0 ? 'Par' : 'Impar',
-  );
+  protected readonly parOImpar = computed(() => {
+    const valor = this.contador();
+    if (valor === 0) return 'Cero';
+    return valor % 2 === 0 ? 'Par' : 'Impar';
+  });
 
-  /** Registro de movimientos. */
+  /** El log es un array: cada cambio crea una referencia nueva. */
   protected readonly log = signal<LogEntry[]>([]);
 
   private nextId = 1;
 
+  /** Sólo pintamos los cinco últimos, pero el estado completo sigue ahí. */
   protected readonly ultimosCinco = computed(() => this.log().slice(-5));
+  protected readonly totalMovimientos = computed(() => this.log().length);
+
+  /** `model()` en acción: el hijo puede escribir en este signal. */
+  protected readonly rating = signal(3);
 
   protected incrementar(): void {
-    this.contador.update((v) => v + 1);
-    this.registrar(`+1 → ${this.contador() + 0}`); // usamos el nuevo valor
-    // mejor calcular nuevo valor
+    const nuevo = this.contador() + 1;
+    this.contador.set(nuevo);
+    this.registrar(`+1 → ${nuevo}`);
   }
 
   protected decrementar(): void {
-    this.contador.update((v) => v - 1);
-    this.registrar(`-1`);
+    const nuevo = this.contador() - 1;
+    this.contador.set(nuevo);
+    this.registrar(`−1 → ${nuevo}`);
   }
 
   protected reset(): void {
@@ -65,24 +77,26 @@ export class Lesson02Signals {
       texto,
       hora: new Date().toLocaleTimeString(),
     };
+    // Inmutabilidad: un array nuevo, no `this.log().push(entry)`.
     this.log.update((items) => [...items, entry]);
   }
 
   protected readonly signalSnippet = `// Crear un signal
 const count = signal(0);
 
-// Leerlo en plantilla o con ()
+// Leerlo en la plantilla o en el código con ()
 console.log(count()); // 0
 
 // Actualizarlo
 count.set(5);           // asigna un valor
-count.update(v => v+1); // basado en el valor anterior`;
+count.update(v => v + 1); // basado en el valor anterior`;
 
-  protected readonly computedSnippet = `// Valor derivado, se recalcula solo si sus signals cambian
+  protected readonly computedSnippet = `// Valor derivado: se recalcula sólo si sus signals cambian
 const double = computed(() => count() * 2);
+const parity = computed(() => (count() % 2 === 0 ? 'Par' : 'Impar'));
 
 // No se puede asignar directamente
-// double.set(10); // error`;
+// double.set(10); // error de compilación`;
 
   protected readonly inmutableSnippet = `// Arrays: crear uno nuevo, no mutar
 items.update(list => [...list, nuevoItem]);
@@ -91,8 +105,21 @@ items.update(list => list.filter(x => x.id !== id));
 // Objetos: spread
 user.update(u => ({ ...u, nombre: 'Han' }));`;
 
-  protected readonly linkedSnippet = `// linkedSignal: nace de un input, se puede modificar
+  protected readonly linkedSnippet = `// linkedSignal: nace de un input, se reinicia si el input cambia
+// y aun así se puede modificar con set/update.
 initialLikes = input(0);
 count = linkedSignal(() => this.initialLikes());
-// count() puede cambiar con set/update`;
+
+// model(): input de doble sentido
+value = model(0);
+// <app-rating-stars [(value)]="rating" />`;
+
+  protected readonly logSnippet = `// Cada acción crea una entrada nueva
+private registrar(texto: string): void {
+  const entry = { id: this.nextId++, texto, hora: new Date().toLocaleTimeString() };
+  this.log.update(items => [...items, entry]);
+}
+
+// Derivado: los cinco últimos sin duplicar el estado
+ultimosCinco = computed(() => this.log().slice(-5));`;
 }

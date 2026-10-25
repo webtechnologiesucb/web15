@@ -328,7 +328,8 @@
   text-decoration: none;
 }
 /* El chip del recurso abierto se marca con aria-current, sin clase extra. */
-.chip[aria-current='page'] {
+.chip[aria-current='page'],
+.chip--active {
   border-color: var(--accent);
   color: var(--accent);
 }

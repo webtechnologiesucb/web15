@@ -1,0 +1,124 @@
+<app-lesson-shell [lesson]="lesson">
+  <section class="lesson__section">
+    <h2 class="lesson__h2">1 · OnPush: renderizar sólo cuando toca</h2>
+    <p>
+      Un componente <code class="inline-code">OnPush</code> sólo se comprueba si cambia un input,
+      si emite un evento propio o si cambia un signal que lee. El contador de la demo se incrementa
+      en <code class="inline-code">ngDoCheck()</code>: es una medida directa de cuántas veces Angular
+      lo revisa.
+    </p>
+
+    <app-base-card title="Demo: renders de un hijo OnPush" subtitle="Cambia estados y observa el contador">
+      <div class="l10-panel stack">
+        <app-render-counter [item]="selected()" />
+
+        <div class="row">
+          @for (item of items; track item.id) {
+            <button
+              appBaseButton
+              size="sm"
+              type="button"
+              [variant]="selectedId() === item.id ? 'primary' : 'ghost'"
+              (click)="select(item.id)"
+            >
+              {{ item.name.split(' ')[0] }}
+            </button>
+          }
+        </div>
+
+        <div class="row row--between">
+          <span class="dim">
+            Estado no relacionado: <strong>{{ unrelatedClicks() }}</strong>
+          </span>
+          <button appBaseButton size="sm" variant="subtle" type="button" (click)="bumpUnrelated()">
+            Incrementar estado no relacionado
+          </button>
+        </div>
+
+        <p class="dim">
+          Pulsa «Incrementar estado no relacionado»: el contador del hijo
+          <strong>no cambia</strong>, porque ese estado no forma parte de sus inputs. Selecciona
+          otro personaje y sí se comprobará.
+        </p>
+      </div>
+    </app-base-card>
+
+    <app-code-block title="OnPush + ngDoCheck" [code]="onPushSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">2 · Signals y detección de cambios zoneless</h2>
+    <p>
+      Angular 21 arranca sin zone.js por defecto. La detección de cambios ya no depende de parchear
+      APIs asíncronas: los signals avisan de forma precisa. Esta aplicación usa
+      <code class="inline-code">provideZonelessChangeDetection()</code>.
+    </p>
+    <app-code-block title="Zoneless" [code]="zonelessSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">3 · &#64;for y track</h2>
+    <p>
+      <code class="inline-code">track</code> le dice a Angular cómo identificar cada fila. Con una
+      clave estable (<code class="inline-code">item.id</code>) puede mover el nodo existente al
+      reordenar; con <code class="inline-code">$index</code> reutiliza por posición y puede repintar
+      de más.
+    </p>
+
+    <app-base-card title="Orden de la lista" subtitle="track item.id">
+      <div class="row row--between">
+        <span class="dim">
+          Primero: <strong>{{ firstOrdered().name }}</strong>
+        </span>
+        <button appBaseButton size="sm" type="button" (click)="rotate()">Rotar el orden</button>
+      </div>
+
+      <ul class="l10-list">
+        @for (item of orderedItems(); track item.id) {
+          <li class="l10-row" [class.l10-row--selected]="item.id === selectedId()">
+            <button class="l10-row__btn" type="button" (click)="select(item.id)">
+              {{ item.name }} <span class="dim">· {{ item.role }}</span>
+            </button>
+            <span class="l10-row__count dim">#{{ item.id }}</span>
+          </li>
+        }
+      </ul>
+    </app-base-card>
+
+    <app-code-block title="track estable" [code]="trackSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">4 · Code splitting con &#64;defer</h2>
+    <p>
+      Lo que no se ve al arrancar no debería viajar en el bundle inicial.
+      <code class="inline-code">&#64;defer</code> lo descarga cuando hace falta y mantiene un
+      <em>placeholder</em> ligero mientras tanto.
+    </p>
+    <app-code-block title="@defer" [code]="deferSnippet" />
+  </section>
+
+  <section class="lesson__section">
+    <h2 class="lesson__h2">5 · Checklist antes de optimizar</h2>
+    <app-base-card title="No optimices a ciegas" subtitle="Mide primero, cambia después">
+      <div class="l10-panel l10-checklist">
+        <ul>
+          <li>Mide con Angular DevTools y el panel Performance.</li>
+          <li>Busca renders de más antes de tocar el código.</li>
+          <li>OnPush en componentes hoja con inputs o signals.</li>
+          <li>Evita crear objetos y arrays nuevos en la plantilla sin necesidad.</li>
+          <li>Usa <code class="inline-code">track</code> estable en cada <code class="inline-code">&#64;for</code>.</li>
+          <li>Deja <code class="inline-code">&#64;defer</code> para lo que no se ve al arrancar.</li>
+          <li>Vuelve a medir: si no mejora, revierte.</li>
+        </ul>
+        <div class="row">
+          <app-base-badge tone="success">signals</app-base-badge>
+          <app-base-badge tone="primary">OnPush</app-base-badge>
+          <app-base-badge tone="accent">zoneless</app-base-badge>
+        </div>
+      </div>
+    </app-base-card>
+
+    <app-code-block title="Checklist" [code]="checklistSnippet" />
+  </section>
+</app-lesson-shell>

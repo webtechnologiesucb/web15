@@ -2,7 +2,7 @@
    lessons.css · estilos de las demos de cada lección (prefijo lNN-)
    ========================================================================== */
 
-/* --- Lección 01 · JSX y componentes -------------------------------------- */
+/* --- Lección 01 · componentes y plantillas ------------------------------- */
 
 .l01-grid {
   display: grid;
@@ -39,7 +39,7 @@
   font-size: 0.76rem;
 }
 
-/* --- Lección 02 · useState ----------------------------------------------- */
+/* --- Lección 02 · signals y estado --------------------------------------- */
 
 .l02-panel {
   gap: 1rem;
@@ -93,7 +93,7 @@
   }
 }
 
-/* --- Lección 03 · useEffect y datos -------------------------------------- */
+/* --- Lección 03 · datos asíncronos --------------------------------------- */
 
 .l03-panel {
   gap: 1rem;
@@ -112,13 +112,27 @@
   font-size: 0.82rem;
 }
 
-/* --- Lección 04 · hooks personalizados ----------------------------------- */
+/* --- Lección 04 · servicios e inyección ---------------------------------- */
 
 .l04-panel {
   gap: 0.9rem;
 }
 .l04-stats {
   gap: 0.4rem;
+}
+.l04-bases,
+.l06-keys,
+.l08-bases {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.85rem;
+}
+.l04-bases code,
+.l08-bases code {
+  word-break: break-all;
 }
 
 /* --- Lección 05 · router ------------------------------------------------- */
@@ -135,6 +149,32 @@
   color: #dfe6ff;
   font-size: 0.82rem;
   overflow-x: auto;
+}
+.l05-routes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.l05-route {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.8fr) minmax(120px, 0.8fr) minmax(0, 1.6fr);
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 0.85rem;
+}
+.l05-route code {
+  justify-self: start;
+}
+
+@media (max-width: 700px) {
+  .l05-route {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.15rem;
+  }
 }
 
 /* --- Lección 06 · estado global ------------------------------------------ */
@@ -177,6 +217,17 @@
 .l06-compare p {
   margin: 0;
 }
+.l06-saved-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.l06-keys {
+  margin-bottom: 0.5rem;
+}
 
 /* --- Lección 07 · formularios y búsqueda --------------------------------- */
 
@@ -200,6 +251,9 @@
 .l07-status {
   margin: 0;
   font-size: 0.85rem;
+}
+.l07-status--error {
+  color: var(--danger);
 }
 .l07-results {
   display: grid;
@@ -231,7 +285,7 @@
   }
 }
 
-/* --- Lección 08 · composición y Context ---------------------------------- */
+/* --- Lección 08 · composición e inyección -------------------------------- */
 
 .l08-readout {
   margin: 0;
@@ -249,6 +303,60 @@
 }
 .l08-row strong {
   flex: 1;
+}
+.l08-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 1.15rem;
+}
+.l08-highlight {
+  padding: 0.1em 0.4em;
+  border-bottom: 1px solid currentColor;
+  border-radius: 4px;
+}
+.l08-highlight-demo {
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 0.9rem;
+}
+.l08-repeat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.l08-repeat {
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.l08-providers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.8rem;
+}
+.l08-provider {
+  padding: 0.8rem 1rem;
+  border: 1px dashed var(--accent);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.l08-provider p {
+  margin: 0.35rem 0 0;
 }
 
 /* --- Lección 09 · animaciones -------------------------------------------- */
@@ -300,6 +408,41 @@
 }
 .l09-loaded {
   margin-top: 0.5rem;
+}
+.l09-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.l09-placeholder p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+.l09-deferred {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--success);
+  border-radius: var(--radius);
+  background: var(--success-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .l09-item,
+  .l09-deferred {
+    animation: none;
+  }
+  /* La salida sigue siendo instantánea, pero deja que `animationend`
+     llegue para desmontar el elemento (si no, quedaría marcado como
+     «saliendo» para siempre). */
+  .l09-item--leaving {
+    animation: l09-out 0.01ms linear forwards;
+  }
 }
 
 /* --- Lección 10 · rendimiento -------------------------------------------- */
@@ -353,4 +496,23 @@
   margin: 0;
   padding-left: 1.2rem;
   font-size: 0.9rem;
+}
+.l10-render {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+}
+.l10-render__count {
+  padding: 0.15rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  white-space: nowrap;
 }
